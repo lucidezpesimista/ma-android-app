@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">間</string>
+    <string name="search_hint">Buscar...</string>
+    <string name="no_results">No se encontraron resultados</string>
+    <string name="add_item">Agregar ítem</string>
+    <string name="focus">Enfocar</string>
+    <string name="back">Volver</string>
+    <string name="note">Nota</string>
+    <string name="delete">Eliminar</string>
+    <string name="indent">Indentar</string>
+    <string name="outdent">Desindentar</string>
+    <string name="move_up">Mover arriba</string>
+    <string name="move_down">Mover abajo</string>
+    <string name="export">Exportar</string>
+    <string name="import_file">Importar</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restaurar</string>
+    <string name="children_count">%d hijos</string>
+</resources>
