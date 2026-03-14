@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -71,7 +71,7 @@ fun CalendarScreen(
                 onSelectDate = viewModel::selectDate
             )
 
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            Divider(modifier = Modifier.padding(horizontal = 16.dp))
 
             // Fecha seleccionada
             val dateFormat = SimpleDateFormat("EEEE, d 'de' MMMM", Locale("es", "ES"))
@@ -132,7 +132,7 @@ private fun CalendarHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = onPreviousMonth) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Mes anterior")
+            Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
         }
 
         Text(
@@ -142,7 +142,7 @@ private fun CalendarHeader(
         )
 
         IconButton(onClick = onNextMonth) {
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Mes siguiente")
+            Icon(Icons.Default.ArrowForward, contentDescription = "Mes siguiente")
         }
     }
 }
@@ -287,7 +287,7 @@ private fun CalendarTaskItem(
     node: Node,
     onClick: () -> Unit
 ) {
-    val priority = node.getPriority()
+    val priority = node.priorityEnum()
     val priorityColor = when (priority) {
         Priority.HIGH -> Color(0xFFD32F2F)
         Priority.MEDIUM -> Color(0xFFFF8F00)

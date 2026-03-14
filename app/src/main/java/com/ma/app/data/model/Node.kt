@@ -73,8 +73,8 @@ data class Node(
 ) {
     fun isRoot(): Boolean = parentId == null
     fun withUpdatedTimestamp(): Node = copy(updatedAt = Date())
-    fun getNodeType(): NodeType = NodeType.valueOf(nodeType)
-    fun getPriority(): Priority = Priority.valueOf(priority)
+    fun nodeTypeEnum(): NodeType = NodeType.valueOf(nodeType)
+    fun priorityEnum(): Priority = Priority.valueOf(priority)
 }
 
 /**

@@ -1,3 +1,4 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package com.ma.app.ui.components
 
 import androidx.compose.animation.*
@@ -298,13 +299,13 @@ private fun ClickableNodeText(
             parsedText.annotatedString.getStringAnnotations("hashtag", offset, offset)
                 .firstOrNull()?.let { annotation ->
                     onHashtagClick(annotation.item)
-                    return@clickableText
+                    return@ClickableText
                 }
 
             parsedText.annotatedString.getStringAnnotations("internal_link", offset, offset)
                 .firstOrNull()?.let { annotation ->
                     onInternalLinkClick(annotation.item)
-                    return@clickableText
+                    return@ClickableText
                 }
 
             // Si no, iniciar edición

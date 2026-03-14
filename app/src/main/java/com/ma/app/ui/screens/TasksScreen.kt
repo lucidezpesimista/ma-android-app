@@ -218,7 +218,7 @@ private fun TaskItem(
     isOverdue: Boolean = false
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    val priority = task.getPriority()
+    val priority = task.priorityEnum()
     val priorityColor = when (priority) {
         Priority.HIGH -> Color(0xFFD32F2F)
         Priority.MEDIUM -> Color(0xFFFF8F00)
@@ -307,7 +307,7 @@ private fun TaskItem(
                         leadingIcon = { Icon(Icons.Default.OpenInNew, null) },
                         onClick = { showMenu = false; onClick() }
                     )
-                    HorizontalDivider()
+                    Divider()
                     Text(
                         "Prioridad",
                         style = MaterialTheme.typography.labelMedium,
@@ -341,7 +341,7 @@ private fun TaskItem(
                             onClick = { onSetPriority(p); showMenu = false }
                         )
                     }
-                    HorizontalDivider()
+                    Divider()
                     DropdownMenuItem(
                         text = { Text("Eliminar", color = MaterialTheme.colorScheme.error) },
                         leadingIcon = {
@@ -361,7 +361,7 @@ private fun TaskItem(
             .clickable { onClick() }
     )
 
-    HorizontalDivider(
+    Divider(
         modifier = Modifier.padding(start = 56.dp),
         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
     )

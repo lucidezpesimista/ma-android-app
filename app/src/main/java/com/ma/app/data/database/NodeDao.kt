@@ -41,13 +41,13 @@ interface NodeDao {
 
     // ===== QUERIES DE TAREAS (TODOIST STYLE) =====
 
-    @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' AND isCompleted = 0 ORDER BY priority DESC, dueDate ASC NULLS LAST, orderIndex ASC")
+    @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' AND isCompleted = 0 ORDER BY priority DESC, CASE WHEN dueDate IS NULL THEN 1 ELSE 0 END ASC, dueDate ASC, orderIndex ASC")
     fun getPendingTasks(): Flow<List<Node>>
 
     @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' AND isCompleted = 1 ORDER BY completedAt DESC")
     fun getCompletedTasks(): Flow<List<Node>>
 
-    @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' ORDER BY isCompleted ASC, priority DESC, dueDate ASC NULLS LAST")
+    @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' ORDER BY isCompleted ASC, priority DESC, CASE WHEN dueDate IS NULL THEN 1 ELSE 0 END ASC, dueDate ASC")
     fun getAllTasks(): Flow<List<Node>>
 
     @Query("SELECT * FROM nodes WHERE nodeType = 'TASK' AND isCompleted = 0 AND dueDate IS NOT NULL AND dueDate <= :today ORDER BY dueDate ASC")

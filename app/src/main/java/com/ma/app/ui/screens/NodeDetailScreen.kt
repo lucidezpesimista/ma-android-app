@@ -6,7 +6,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContentColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -59,7 +57,7 @@ fun NodeDetailScreen(
                         if (uiState.hasUnsavedChanges) viewModel.saveNote()
                         onNavigateBack()
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
                     }
                 },
                 actions = {
@@ -136,19 +134,19 @@ fun NodeDetailScreen(
                 ) {
                     // Tipo de nodo
                     FilterChip(
-                        selected = n.getNodeType() == NodeType.TASK,
+                        selected = n.nodeTypeEnum() == NodeType.TASK,
                         onClick = {
-                            if (n.getNodeType() == NodeType.TASK) viewModel.convertToNote()
+                            if (n.nodeTypeEnum() == NodeType.TASK) viewModel.convertToNote()
                             else viewModel.convertToTask()
                         },
                         label = {
                             Text(
-                                if (n.getNodeType() == NodeType.TASK) "Tarea" else "Nota"
+                                if (n.nodeTypeEnum() == NodeType.TASK) "Tarea" else "Nota"
                             )
                         },
                         leadingIcon = {
                             Icon(
-                                if (n.getNodeType() == NodeType.TASK) Icons.Default.CheckBox
+                                if (n.nodeTypeEnum() == NodeType.TASK) Icons.Default.CheckBox
                                 else Icons.Default.Notes,
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
@@ -157,14 +155,14 @@ fun NodeDetailScreen(
                     )
 
                     // Prioridad (solo si es tarea)
-                    if (n.getNodeType() == NodeType.TASK) {
+                    if (n.nodeTypeEnum() == NodeType.TASK) {
                         Box {
                             FilterChip(
-                                selected = n.getPriority() != Priority.NONE,
+                                selected = n.priorityEnum() != Priority.NONE,
                                 onClick = { showPriorityMenu = true },
                                 label = {
                                     Text(
-                                        when (n.getPriority()) {
+                                        when (n.priorityEnum()) {
                                             Priority.HIGH -> "Alta"
                                             Priority.MEDIUM -> "Media"
                                             Priority.LOW -> "Baja"
@@ -177,11 +175,11 @@ fun NodeDetailScreen(
                                         Icons.Default.Flag,
                                         contentDescription = null,
                                         modifier = Modifier.size(16.dp),
-                                        tint = when (n.getPriority()) {
+                                        tint = when (n.priorityEnum()) {
                                             Priority.HIGH -> Color(0xFFD32F2F)
                                             Priority.MEDIUM -> Color(0xFFFF8F00)
                                             Priority.LOW -> Color(0xFF388E3C)
-                                            Priority.NONE -> LocalContentColor.current
+                                            Priority.NONE -> MaterialTheme.colorScheme.onSurface
                                         }
                                     )
                                 }
@@ -234,7 +232,7 @@ fun NodeDetailScreen(
                 }
 
                 // Si es tarea: checkbox de completado
-                if (n.getNodeType() == NodeType.TASK) {
+                if (n.nodeTypeEnum() == NodeType.TASK) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -269,7 +267,7 @@ fun NodeDetailScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider()
+                Divider()
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Resultado de Claude
