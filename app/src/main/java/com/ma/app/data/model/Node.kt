@@ -7,21 +7,33 @@ import androidx.room.PrimaryKey
 import java.util.Date
 
 /**
+ * Tipos de nodo para diferenciar entre notas, tareas y eventos.
+ */
+enum class NodeType {
+    NOTE,   // Nota de texto libre (estilo Workflowy)
+    TASK,   // Tarea con checkbox, prioridad y fecha límite (estilo Todoist)
+    EVENT   // Evento con fecha en el calendario
+}
+
+/**
+ * Niveles de prioridad para tareas.
+ */
+enum class Priority {
+    NONE, LOW, MEDIUM, HIGH
+}
+
+/**
  * Entidad principal del outliner.
- * 
+ *
  * DECISIÓN CLAVE - orderIndex como Double (fractional indexing):
- * Usamos Double en lugar de Long para orderIndex. Esto permite insertar ítems entre
- * dos existentes sin necesidad de reindexar toda la lista. Por ejemplo, si tenemos
- * ítems con orderIndex 1.0 y 2.0, podemos insertar uno nuevo con 1.5.
- * 
- * Cuando el espacio entre ítems se vuelve muy pequeño (ej: 1.0 y 1.000001),
- * eventualmente necesitaremos reindexar, pero esto es raro en uso normal.
- * 
- * Un nodo puede tener:
- * - title: el texto principal del ítem (una línea preferiblemente)
- * - note: texto adicional/descripción (puede ser multi-línea)
- * - parentId: null para raíz, o ID del padre
- * - orderIndex: para ordenar hermanos
+ * Permite insertar ítems entre dos existentes sin reindexar toda la lista.
+ *
+ * Campos nuevos para tareas y calendario:
+ * - nodeType: diferencia notas, tareas y eventos
+ * - isCompleted: para tareas
+ * - dueDate: fecha límite (tareas) o fecha de evento
+ * - priority: prioridad de la tarea
+ * - completedAt: cuándo se completó
  */
 @Entity(
     tableName = "nodes",
@@ -35,7 +47,10 @@ import java.util.Date
     ],
     indices = [
         Index(value = ["parentId"]),
-        Index(value = ["parentId", "orderIndex"])
+        Index(value = ["parentId", "orderIndex"]),
+        Index(value = ["dueDate"]),
+        Index(value = ["isCompleted"]),
+        Index(value = ["nodeType"])
     ]
 )
 data class Node(
@@ -47,31 +62,29 @@ data class Node(
     val note: String? = null,
     val createdAt: Date = Date(),
     val updatedAt: Date = Date(),
-    val isCollapsed: Boolean = false
-) {
-    /**
-     * Retorna true si este nodo es root (sin padre)
-     */
-    fun isRoot(): Boolean = parentId == null
+    val isCollapsed: Boolean = false,
 
-    /**
-     * Crea una copia con timestamp actualizado
-     */
+    // Campos de tarea/evento
+    val nodeType: String = NodeType.NOTE.name,
+    val isCompleted: Boolean = false,
+    val dueDate: Date? = null,
+    val priority: String = Priority.NONE.name,
+    val completedAt: Date? = null
+) {
+    fun isRoot(): Boolean = parentId == null
     fun withUpdatedTimestamp(): Node = copy(updatedAt = Date())
+    fun getNodeType(): NodeType = NodeType.valueOf(nodeType)
+    fun getPriority(): Priority = Priority.valueOf(priority)
 }
 
 /**
- * Data class para representar un nodo con su información de jerarquía
- * usado en búsqueda para mostrar contexto.
+ * Data class para representar un nodo con su información de jerarquía.
  */
 data class NodeWithPath(
     val node: Node,
-    val path: List<Node>, // Ancestros desde root hasta el padre
+    val path: List<Node>,
     val childrenCount: Int = 0
 ) {
-    /**
-     * Retorna el path como string formateado: "Root > Parent > ..."
-     */
     fun pathString(): String {
         return path.map { it.title.takeIf { t -> t.isNotBlank() } ?: "(sin título)" }
             .plus(node.title.takeIf { it.isNotBlank() } ?: "(sin título)")
@@ -80,7 +93,7 @@ data class NodeWithPath(
 }
 
 /**
- * Representa un nodo con sus hijos inmediatos (para la UI de outline)
+ * Representa un nodo con sus hijos inmediatos (para la UI de outline).
  */
 data class NodeWithChildren(
     val node: Node,

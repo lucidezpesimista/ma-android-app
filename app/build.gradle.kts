@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -93,6 +94,18 @@ dependencies {
 
     // Flow
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    // DataStore (preferencias)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // OkHttp (Claude API)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Kotlinx Serialization (JSON para Claude API y sync)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    // Security Crypto (API key cifrada)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
